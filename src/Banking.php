@@ -20,8 +20,8 @@ class Banking
     {
         $this->http = new Connection();
 
-        if ($this->http->token->status !== 1) {
-            return ['code' => 400];
+        if ($this->http->token->status == 0) {
+            return ['code' => 401];
         }
     }
 
@@ -40,7 +40,6 @@ class Banking
     public function getBoleto($codigoIdentificacao)
     {
         try {
-
             $response = $this->http->get('/pj/apibanking/forintegration/v1/pagamentos/' . $codigoIdentificacao);
 
             return $response;

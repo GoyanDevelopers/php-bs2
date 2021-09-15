@@ -14,11 +14,13 @@ class Connection
     {
         $this->token = Token::first();
 
-        RenewToken::dispatch(1)->onQueue('high');
+        RenewToken::dispatch()->onQueue('high');
     }
 
     public function refreshTokenAcess()
     {
+        $this->token->update(['status' => 0]);
+
         $params = [
             'grant_type' => 'refresh_token',
             'scope' => $this->token->scope,
@@ -29,9 +31,12 @@ class Connection
 
         if ($response['code'] == 200) {
 
-            $this->token->update(array_merge($response['response'], ['status' => 1]));
+            if ($response['response']['access_token']) {
 
-            return true;
+                $this->token->update(array_merge($response['response'], ['status' => 1]));
+
+                return true;
+            }
         }
 
         return false;

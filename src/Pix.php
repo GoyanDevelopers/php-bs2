@@ -20,8 +20,8 @@ class Pix
     {
         $this->http = new Connection();
 
-        if ($this->http->token->status !== 1) {
-            return ['code' => 400];
+        if ($this->http->token->status == 0) {
+            return ['code' => 401];
         }
     }
 

@@ -9,27 +9,30 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Goyan\Bs2\Utils\Connection;
+use App\Models\Usuario;
 
 class RenewToken implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $uniqueFor = 3600;
+    public $tries = 20;
+
+    public function uniqueId()
+    {
+        return 'bs2-refresh_token';
+    }
 
     public function handle(Connection $conn)
     {
-        $conn->token->update(['status' => 0]);
-
-        try {
-
-            if ($conn->refreshTokenAcess() === true) {
-                return $this->release(300);
-            }
-
-            throw new \Exception('Falha ao gerar o token');
-        } catch (\Throwable $e) {
-
+        if ($conn->refreshTokenAcess() === true) {
             return $this->release(300);
         }
+
+        if ($this->attempts() >= 20) {
+            Notification::send(Usuario::where('is_admin', 1)->get(), new Notificacao(['titulo' => "Cron Wallet", 'mensagem' => "Houve uma falha renovar o token da BS2, contate a equipe técnica"]));
+
+        }
+
+        return $this->release(120);
     }
 }
