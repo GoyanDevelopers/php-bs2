@@ -1,0 +1,22 @@
+{
+    "name": "goyan/laravel-bs2",
+    "description": "Package for integration with bs2.",
+    "keywords": ["bs2", "laravel", "bank"],
+    "type": "library",
+    "require": {
+        "php": "^7.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Goyan Developers",
+            "email": "contato@goyan.com.br"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Goyan\\Bs2\\": "src/"
+        }
+    }
+}
