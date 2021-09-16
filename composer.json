@@ -18,5 +18,12 @@
         "psr-4": {
             "Goyan\\Bs2\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Goyan\\Bs2\\GoyanServiceProvider"
+            ]
+        }
     }
 }

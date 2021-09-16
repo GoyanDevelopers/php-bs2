@@ -12,7 +12,7 @@ class Banking
     protected $http;
 
     /*
-     * Cria uma nova instância de BankingConnection.
+     * Cria uma nova instância de Banking
      *
      * @return void
      */

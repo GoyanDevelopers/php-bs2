@@ -15,24 +15,37 @@ class RenewToken implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 20;
+    public $tries = 30;
+    public $refresh_token;
+
+    public function __construct($refresh_token)
+    {
+        $this->refresh_token = $refresh_token;
+    }
 
     public function uniqueId()
     {
-        return 'bs2-refresh_token';
+        return $this->refresh_token;
     }
 
     public function handle(Connection $conn)
     {
-        if ($conn->refreshTokenAcess() === true) {
-            return $this->release(300);
+        try {
+            if ($conn->token->refresh_token == $this->refresh_token) {
+
+                $conn->refreshTokenAcess();
+
+                if (!$conn->new_token) {
+                    RenewToken::dispatch($conn->new_token)->onQueue('high')->delay(300);
+                }
+            }
+        } catch (\Throwable $e) {
+
+            if ($this->attempts() >= 30) {
+                Notification::send(Usuario::where('is_admin', 1)->get(), new Notificacao(['titulo' => "Cron Wallet", 'mensagem' => "Houve uma falha renovar o token da BS2, contate a equipe técnica"]));
+            }
+
+            return $this->release(50);
         }
-
-        if ($this->attempts() >= 20) {
-            Notification::send(Usuario::where('is_admin', 1)->get(), new Notificacao(['titulo' => "Cron Wallet", 'mensagem' => "Houve uma falha renovar o token da BS2, contate a equipe técnica"]));
-
-        }
-
-        return $this->release(120);
     }
 }

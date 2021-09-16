@@ -9,16 +9,16 @@ use Goyan\Bs2\Jobs\RenewToken;
 class Connection
 {
     public $token;
+    public $new_token = false;
 
     public function __construct()
     {
         $this->token = Token::first();
-
-        RenewToken::dispatch()->onQueue('high');
     }
 
     public function refreshTokenAcess()
     {
+
         $this->token->update(['status' => 0]);
 
         $params = [
@@ -35,11 +35,12 @@ class Connection
 
                 $this->token->update(array_merge($response['response'], ['status' => 1]));
 
-                return true;
+                $this->new_token = $response['response']['refresh_token'];
+                return;
             }
         }
 
-        return false;
+        throw new \Exception('Falha ao renovar o token de acesso');
     }
 
 
