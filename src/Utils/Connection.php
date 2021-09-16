@@ -11,7 +11,7 @@ class Connection
 
     public function __construct()
     {
-        $this->token = Token::first();
+        $this->token = Token::connection(config('bs2.database_connection'))->first();
     }
 
     public function oAuth($refresh_token)

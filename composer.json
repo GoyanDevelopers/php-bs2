@@ -14,7 +14,7 @@
     "authors": [
         {
             "name": "Goyan Developers",
-            "email": "contato@goyan.com.br"
+            "email": "dev@goyan.com.br"
         }
     ],
     "minimum-stability": "dev",
@@ -31,7 +31,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Goyan\\Bs2\\GoyanServiceProvider"
+                "Goyan\\Bs2\\Bs2ServiceProvider"
             ]
         }
     }
