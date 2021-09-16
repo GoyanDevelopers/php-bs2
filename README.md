@@ -16,7 +16,7 @@ You can install the package via composer, adding the code below to your composer
 ```
 Next publish the migration with:
 ``` bash
-php artisan vendor:publish --provider="Goyan\Bs2\GoyanServiceProvider"
+php artisan vendor:publish --provider="Goyan\Bs2\Bs2ServiceProvider"
 ```
 Run the migrate command to create the necessary table:
 
