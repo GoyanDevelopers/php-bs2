@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class GoyanServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function register()
     {
         if ($this->app->runningInConsole()) {
             $this->commands([GoyanGenerateCommand::class]);

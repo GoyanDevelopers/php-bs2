@@ -10,12 +10,12 @@ class GoyanGenerateCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'goyan:run';
+    protected $signature = 'goyan:run {--token=}';
 
     /**
      * @var string
      */
-    protected $description = 'Executa evento de token BS2';
+    protected $description = 'Executar evento de token BS2';
 
     /**
      * Execute the console command.
@@ -24,14 +24,12 @@ class GoyanGenerateCommand extends Command
      */
     public function handle()
     {
-        $token = $this->option('token');
+        $refresh_token = $this->option('token');
 
-        if ($token) {
-            RenewToken::dispatch($this->argument('token'))->onQueue('high');
+        if ($refresh_token) {
+            RenewToken::dispatch($refresh_token, false)->onQueue('high');
 
-            $this->info('Evento disparado com sucesso');
-        } else {
-            $this->line('<comment>Informe um token</comment>');
+            $this->info('Goyan Developers: Evento disparado com sucesso');
         }
     }
 }

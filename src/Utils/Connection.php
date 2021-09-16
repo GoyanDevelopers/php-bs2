@@ -4,27 +4,25 @@ namespace Goyan\Bs2\Utils;
 
 use Illuminate\Support\Facades\Http;
 use Goyan\Bs2\Models\Token;
-use Goyan\Bs2\Jobs\RenewToken;
 
 class Connection
 {
     public $token;
-    public $new_token = false;
 
     public function __construct()
     {
         $this->token = Token::first();
     }
 
-    public function refreshTokenAcess()
+    public function oAuth($refresh_token)
     {
 
         $this->token->update(['status' => 0]);
 
         $params = [
             'grant_type' => 'refresh_token',
-            'scope' => $this->token->scope,
-            'refresh_token' => $this->token->refresh_token
+            'scope' => 'saldo extrato pagamento transferencia boleto cobv.write cobv.read cob.write cob.read pix.write pix.read dict.write dict.read pix.write pix.read pix.write pix.read pix.write pix.read pix.write pix.read webhook.read webhook.write',
+            'refresh_token' => $refresh_token
         ];
 
         $response = $this->auth($params);
@@ -35,12 +33,11 @@ class Connection
 
                 $this->token->update(array_merge($response['response'], ['status' => 1]));
 
-                $this->new_token = $response['response']['refresh_token'];
-                return;
+                return $response['response']['refresh_token'];
             }
         }
 
-        throw new \Exception('Falha ao renovar o token de acesso');
+        throw new \Exception('O Token "' . $refresh_token . '" não foi aceito pela BS2, realize um novo disparo');
     }
 
 
