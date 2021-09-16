@@ -1,7 +1,11 @@
 {
     "name": "goyan/laravel-bs2",
     "description": "Package for integration with bs2.",
-    "keywords": ["bs2", "laravel", "bank"],
+    "keywords": [
+        "bs2",
+        "laravel",
+        "goyan"
+    ],
     "type": "library",
     "require": {
         "php": "^7.4"
