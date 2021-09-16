@@ -9,9 +9,6 @@ class Token extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'base_url',
-        'api_key',
-        'api_secret',
         'access_token',
         'refresh_token',
         'scope',

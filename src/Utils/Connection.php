@@ -11,7 +11,7 @@ class Connection
 
     public function __construct()
     {
-        $this->token = Token::connection(config('bs2.database_connection'))->first();
+        $this->token = (new Token)->setConnection(config('bs2.database_connection'))->first();
     }
 
     public function oAuth($refresh_token)
@@ -56,8 +56,8 @@ class Connection
                 'Content-Type' => 'application/x-www-form-urlencoded'
             ])
                 ->asForm()
-                ->withBasicAuth($this->token->api_key, $this->token->api_secret)
-                ->post($this->token->base_url . '/auth/oauth/v2/token', $params);
+                ->withBasicAuth(config('bs2.api_key'), config('bs2.api_secret'))
+                ->post(config('bs2.server') . '/auth/oauth/v2/token', $params);
 
             return [
                 'code' => $response->getStatusCode(),
@@ -86,7 +86,7 @@ class Connection
                 'Accept' => 'application/json'
             ])
                 ->withToken($this->token->access_token)
-                ->get($this->token->base_url . $url, $params);
+                ->get(config('bs2.server') . $url, $params);
 
             return [
                 'code' => $response->getStatusCode(),
@@ -115,7 +115,7 @@ class Connection
                 'Accept' => 'application/json'
             ])
                 ->withToken($this->token->access_token)
-                ->post($this->token->base_url . $url, $params);
+                ->post(config('bs2.server') . $url, $params);
 
             return [
                 'code' => $response->getStatusCode(),
@@ -144,7 +144,7 @@ class Connection
                 'Accept' => 'application/json'
             ])
                 ->withToken($this->token->access_token)
-                ->put($this->token->base_url . $url, $params);
+                ->put(config('bs2.server') . $url, $params);
 
             return [
                 'code' => $response->getStatusCode(),
@@ -173,7 +173,7 @@ class Connection
                 'Accept' => 'application/json'
             ])
                 ->withToken($this->token->access_token)
-                ->delete($this->token->base_url . $url, $params);
+                ->delete(config('bs2.server') . $url, $params);
 
             return [
                 'code' => $response->getStatusCode(),
@@ -202,7 +202,7 @@ class Connection
         try {
             $response = Http::attach($fileName, file_get_contents($filePath), $newFileName)
                 ->withToken($this->token->access_token)
-                ->put($this->token->base_url . $url);
+                ->put(config('bs2.server') . $url);
 
             return [
                 'code' => $response->getStatusCode(),
