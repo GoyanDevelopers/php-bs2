@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Validator;
 
 trait Helpers
 {
-    /*
+    /**
      * Valida chave pix.
      *
      * @param array $key
@@ -27,7 +27,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para confirmação de pagamento.
      *
      * @param array $data
@@ -59,7 +59,7 @@ trait Helpers
     }
 
 
-    /*
+    /**
      * Valida dados para pagamento de boleto.
      *
      * @param array $data
@@ -79,13 +79,13 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para pagamento de TED.
      *
      * @param array $data
      * @return void
      */
-    public static function validatePaymentTedData($data)
+    public static function validatePaymentTransferData($data)
     {
         $validator = Validator::make($data, [
             'favorecido.nome' => 'required|string|max:60',
@@ -108,7 +108,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para criação de cobrança dinâmica.
      *
      * @param array $data
@@ -135,7 +135,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para consulta de cobranças.
      *
      * @param array $data
@@ -157,7 +157,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para consulta de cobrança por txId.
      *
      * @param array $data
@@ -174,7 +174,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para consulta de recebimentos.
      *
      * @param array $data
@@ -194,7 +194,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para consulta de recebimentos por recebimentoId.
      *
      * @param array $data
@@ -211,13 +211,13 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para atualização de inscrições do webhook.
      *
      * @param array $data
      * @return void
      */
-    public static function validateUpdateWebhookRegistrationsData($data)
+    public static function validateDeleteWebhookData($data)
     {
         if (!is_array($data)) {
             throw new \Exception("Parameters must be inside an array.");
@@ -240,7 +240,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para exclusão de inscrição do webhook.
      *
      * @param array $data
@@ -257,7 +257,7 @@ trait Helpers
         }
     }
 
-    /*
+    /**
      * Valida dados para inclusão de certificado de webhook.
      *
      * @param array $data

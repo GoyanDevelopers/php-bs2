@@ -10,20 +10,45 @@ class Banking
     use Helpers;
     use Connection;
 
-    /*
-     * Consulta o saldo do cliente Bs2.
+    /**
+     * Consulta de Saldo
+     * Obtém o saldo da conta
      *
      * @return array
      */
     public static function getSaldo()
     {
-        return self::get('/pj/apibanking/forintegration/v1/contascorrentes/saldo');
+        $response = self::get('/pj/apibanking/forintegration/v1/contascorrentes/saldo');
+
+        return $response;
     }
 
+    /**
+     * Consulta de Extrato
+     * Obtém o extrato da conta
+     *
+     * @return array
+     */
+    public static function getExtrato()
+    {
+        $response = self::get('/pj/apibanking/forintegration/v1/contascorrentes/extrato');
+
+        return $response;
+    }
+
+    /**
+     * Pagamento de boleto
+     * Efetua pagamento de título de cobrança ou arrecadação pelo código de barras ou pela linha digitável
+     *
+     * @param  string $codigoIdentificacao
+     * @return array
+     */
     public static function getBoleto($codigoIdentificacao)
     {
         try {
-            return self::get('/pj/apibanking/forintegration/v1/pagamentos/' . $codigoIdentificacao);
+            $response = self::get('/pj/apibanking/forintegration/v1/pagamentos/' . $codigoIdentificacao);
+
+            return $response;
         } catch (\Exception $e) {
             return [
                 'code' => $e->getCode(),
@@ -32,12 +57,21 @@ class Banking
         }
     }
 
+    /**
+     * Pagamento de boleto
+     * Efetua pagamento de título de cobrança ou arrecadação pelo código de barras ou pela linha digitável
+     *
+     * @param  array $params
+     * @return array
+     */
     public static function paymentBoleto($params)
     {
         try {
             self::validatePaymentBoletoData($params);
 
-            return self::post('/pj/apibanking/forintegration/v1/pagamentos', $params);
+            $response = self::post('/pj/apibanking/forintegration/v1/pagamentos', $params);
+
+            return $response;
         } catch (\Exception $e) {
             return [
                 'code' => $e->getCode(),
@@ -46,10 +80,17 @@ class Banking
         }
     }
 
-    public static function paymentTed($params)
+    /**
+     * Transferência
+     * Efetua TED para qualquer titularidade sem cadastro do favorecido
+     *
+     * @param  array $params
+     * @return array
+     */
+    public static function paymentTransfer($params)
     {
         try {
-            self::validatePaymentTedData($params);
+            self::validatePaymentTransferData($params);
 
             $response = self::post('/pj/apibanking/forintegration/v1/transferencias/simplificado', $params);
 

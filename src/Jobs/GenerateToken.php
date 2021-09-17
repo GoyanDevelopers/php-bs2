@@ -16,7 +16,14 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
 
     public $tries = 3;
 
+    /**
+     * @var string
+     */
     protected $refresh_token;
+
+    /**
+     * @var boolean
+     */
     protected $relaunch;
 
     public function __construct($refresh_token, $relaunch)
@@ -25,11 +32,19 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
         $this->relaunch = $relaunch;
     }
 
+    /**
+     * @return array
+     */
     public function uniqueId()
     {
         return $this->refresh_token;
     }
 
+    /**
+     * Executar evento.
+     *
+     * @return mixed
+     */
     public function handle()
     {
         try {

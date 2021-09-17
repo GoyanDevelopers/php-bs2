@@ -1,18 +1,14 @@
 # Bs2 Empresas for Laravel
 
 This is a package developed in Laravel 8, still under development (Any and all contributions are very welcome)
+Go to <https://devs.bs2.com/> for more technical details.
 
 ## Installation
 
-You can install the package via composer, adding the code below to your composer.json
+You can install the package via composer
 
-``` javascript
-"repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/GoyanDevelopers/laravel-bs2"
-        }
-]
+``` bash
+composer require goyan/laravel-bs2
 ```
 Next publish the migration with:
 ``` bash

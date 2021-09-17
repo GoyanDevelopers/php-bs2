@@ -7,6 +7,11 @@ use Goyan\Bs2\Models\Token;
 
 trait Connection
 {
+    /**
+     * Buscar token de acesso
+     *
+     * @return mixed
+     */
     public static function getToken()
     {
         $token = Token::firstOrFail();
@@ -18,43 +23,26 @@ trait Connection
         return $token;
     }
 
+    /**
+     * Atualizar token de acesso
+     *
+     * @param  mixed $refresh_token
+     * @return void
+     */
     public static function refleshConnection($refresh_token)
     {
-        $token = Token::firstOrCreate();
-
-        $token->update(['status' => 0]);
-
-        $params = [
-            'grant_type' => 'refresh_token',
-            'scope' => config('bs2.scope'),
-            'refresh_token' => $refresh_token
-        ];
-
-        $response = self::auth($params);
-
-        if ($response['code'] == 200) {
-
-            if ($response['response']['access_token']) {
-                $token->update(array_merge($response['response'], ['status' => 1]));
-
-                return $response['response'];
-            }
-        }
-
-        throw new \Exception('O Token "' . $refresh_token . '" não foi aceito pela BS2, realize um novo disparo');
-    }
-
-
-    /*
-     * Realiza uma solicitação post utilizando Basic Authentication
-     * para gerar um token de acesso.
-     *
-     * @param array $params
-     * @return array
-     */
-    public static function auth($params)
-    {
         try {
+
+            $token = Token::firstOrCreate();
+
+            $token->update(['status' => 0]);
+
+            $params = [
+                'grant_type' => 'refresh_token',
+                'scope' => config('bs2.scope'),
+                'refresh_token' => $refresh_token
+            ];
+
             $response = Http::withHeaders([
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/x-www-form-urlencoded'
@@ -63,20 +51,21 @@ trait Connection
                 ->withBasicAuth(config('bs2.api_key'), config('bs2.api_secret'))
                 ->post(config('bs2.server') . '/auth/oauth/v2/token', $params);
 
-            return [
-                'code' => $response->getStatusCode(),
-                'response' => $response->json()
-            ];
-        } catch (\Exception $e) {
-            return [
-                'code' => $e->getCode(),
-                'response' => $e->getMessage()
-            ];
+            if ($response->getStatusCode() == 200) {
+
+                $token->update(array_merge(['status' => 1], $response->json()));
+
+                return $response->json();
+            }
+
+            throw new \Exception('O Token "' . $refresh_token . '" não foi aceito pela BS2, confira o arquivo config/bs2.php e em seguida realize um novo disparo');
+        } catch (\Throwable $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 
-    /*
-     * Realiza uma solicitação get padrão utilizando
+    /**
+     * Realiza uma solicitação get
      * Bearer Authentication.
      *
      * @param string $url
@@ -104,7 +93,7 @@ trait Connection
         }
     }
 
-    /*
+    /**
      * Realiza uma solicitação post padrão utilizando
      * Bearer Authentication.
      *
@@ -133,7 +122,7 @@ trait Connection
         }
     }
 
-    /*
+    /**
      * Realiza uma solicitação put padrão utilizando
      * Bearer Authentication.
      *
@@ -162,7 +151,7 @@ trait Connection
         }
     }
 
-    /*
+    /**
      * Realiza uma solicitação delete padrão utilizando
      * Bearer Authentication.
      *
@@ -191,7 +180,7 @@ trait Connection
         }
     }
 
-    /*
+    /**
      * Realiza uma solicitação put com envio de arquivos
      * utilizando Bearer Authentication.
      *

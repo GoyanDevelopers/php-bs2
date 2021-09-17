@@ -8,31 +8,20 @@ use Goyan\Bs2\Utils\Connection;
 class Pix
 {
     use Helpers;
+    use Connection;
 
-    protected $http;
-
-    /*
-     * Cria uma nova instância de PixConnection.
+    /**
+     * Pagamento - Iniciar pagamento por chave
      *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->http = new Connection(true);
-    }
-
-    /*
-     * Pagamento - Iniciar pagamento por chave.
-     *
-     * @param array $key
+     * @param  string $key
      * @return array
      */
-    public function startPaymentByKey($key)
+    public static function paymentByKey($key)
     {
         try {
-            $this->validatePixKey($key);
+            self::validatePixKey($key);
 
-            $response = $this->http->post('/pix/direto/forintegration/v1/pagamentos/chave', $key);
+            $response = self::post('/pix/direto/forintegration/v1/pagamentos/chave', $key);
 
             return $response;
         } catch (\Exception $e) {
@@ -43,19 +32,20 @@ class Pix
         }
     }
 
-    /*
+
+    /**
      * Pagamento - Confirmar
      *
-     * @param int $pagamentoId
-     * @param int $value
+     * @param  string $pagamentoId
+     * @param  array $params
      * @return array
      */
-    public function confirmPayment($pagamentoId, $params)
+    public static function confirmPayment($pagamentoId, $params)
     {
         try {
-            $this->validateConfirmPaymentData($params);
+            self::validateConfirmPaymentData($params);
 
-            $response = $this->http->post('/pix/direto/forintegration/v1/pagamentos/' . $pagamentoId . '/confirmacao', $params);
+            $response = self::post('/pix/direto/forintegration/v1/pagamentos/' . $pagamentoId . '/confirmacao', $params);
 
             return $response;
         } catch (\Exception $e) {
@@ -66,16 +56,16 @@ class Pix
         }
     }
 
-    /*
-     * Pagamento - Consultar por PagamentoId.
+    /**
+     * Pagamento - Consultar por PagamentoId
      *
-     * @param int $pagamentoId
+     * @param  string $pagamentoId
      * @return array
      */
-    public function paymentDetailsByPagamentoId($pagamentoId)
+    public static function paymentDetailsByPagamentoId($pagamentoId)
     {
         try {
-            $response = $this->http->get('/pix/direto/forintegration/v1/pagamentos/' . $pagamentoId);
+            $response = self::get('/pix/direto/forintegration/v1/pagamentos/' . $pagamentoId);
 
             return $response;
         } catch (\Exception $e) {
@@ -86,18 +76,18 @@ class Pix
         }
     }
 
-    /*
-     * Cobrança dinâmica - Criar.
+    /**
+     * Cobrança dinâmica - Criar
      *
-     * @param array $params
+     * @param  array $params
      * @return array
      */
-    public function dynamicCharge($params)
+    public static function dynamicCharge($params)
     {
         try {
-            $this->validateDynamicChargeData($params);
+            self::validateDynamicChargeData($params);
 
-            $response = $this->http->post('/pix/direto/forintegration/v1/qrcodes/dinamico', $params);
+            $response = self::post('/pix/direto/forintegration/v1/qrcodes/dinamico', $params);
 
             return $response;
         } catch (\Exception $e) {
@@ -108,18 +98,18 @@ class Pix
         }
     }
 
-    /*
-     * Cobrança - Consultar.
+    /**
+     * Cobrança - Revisar
      *
-     * @param array $params
+     * @param  array $params
      * @return array
      */
-    public function chargeDetails($params)
+    public static function chargeDetails($params)
     {
         try {
-            $this->validateChargeDetailsData($params);
+            self::validateChargeDetailsData($params);
 
-            $response = $this->http->get('/pix/direto/forintegration/v1/cob', $params);
+            $response = self::get('/pix/direto/forintegration/v1/cob', $params);
 
             return $response;
         } catch (\Exception $e) {
@@ -130,20 +120,20 @@ class Pix
         }
     }
 
-    /*
+    /**
      * Cobrança - Consultar por TxId.
      *
-     * @param int $txId
+     * @param  string $txId
      * @return array
      */
-    public function chargeDetailsByTxId($txId)
+    public static function chargeDetailsByTxId($txId)
     {
         try {
-            $this->validateChargeDetailsByTxIdData([
+            self::validateChargeDetailsByTxIdData([
                 'txId' => $txId
             ]);
 
-            $response = $this->http->get('/pix/direto/forintegration/v1/cob/' . $txId);
+            $response = self::get('/pix/direto/forintegration/v1/cob/' . $txId);
 
             return $response;
         } catch (\Exception $e) {
@@ -154,18 +144,18 @@ class Pix
         }
     }
 
-    /*
-     * Recebimento - Consultar.
+    /**
+     * Recebimento - Consultar
      *
-     * @param array $params
+     * @param  string $params
      * @return array
      */
-    public function receiptDetails($params)
+    public static function receiptDetails($params)
     {
         try {
-            $this->validateReceiptDetailsData($params);
+            self::validateReceiptDetailsData($params);
 
-            $response = $this->http->get('/pix/direto/forintegration/v1/recebimentos', $params);
+            $response = self::get('/pix/direto/forintegration/v1/recebimentos', $params);
 
             return $response;
         } catch (\Exception $e) {
@@ -176,20 +166,20 @@ class Pix
         }
     }
 
-    /*
-     * Recebimento - Consultar por RecebimentoId.
+    /**
+     * Recebimento - Consultar por RecebimentoId
      *
-     * @param int $recebimentoId
+     * @param  string $recebimentoId
      * @return array
      */
-    public function receiptDetailsByRecebimentoId($recebimentoId)
+    public static function receiptDetailsByRecebimentoId($recebimentoId)
     {
         try {
-            $this->validateReceiptDetailsByRecebimentoIdData([
+            self::validateReceiptDetailsByRecebimentoIdData([
                 'recebimentoId' => $recebimentoId
             ]);
 
-            $response = $this->http->get('/pix/direto/forintegration/v1/recebimentos/' . $recebimentoId);
+            $response = self::get('/pix/direto/forintegration/v1/recebimentos/' . $recebimentoId);
 
             return $response;
         } catch (\Exception $e) {
@@ -200,15 +190,16 @@ class Pix
         }
     }
 
-    /*
+    /**
      * Pagamentos - Consultar.
      *
+     * @param  array $params
      * @return array
      */
-    public function payments($params)
+    public static function payments($params)
     {
         try {
-            $response = $this->http->get('/pix/direto/forintegration/v1/pagamentos', $params);
+            $response = self::get('/pix/direto/forintegration/v1/pagamentos', $params);
 
             return $response;
         } catch (\Exception $e) {
@@ -219,15 +210,15 @@ class Pix
         }
     }
 
-    /*
+    /**
      * Webhook - Consultar.
      *
      * @return array
      */
-    public function getWebhookRegistrations()
+    public static function getWebhookRegistrations()
     {
         try {
-            $response = $this->http->get('/pix/direto/forintegration/v1/webhook/bs2');
+            $response = self::get('/pix/direto/forintegration/v1/webhook/bs2');
 
             return $response;
         } catch (\Exception $e) {
@@ -238,18 +229,18 @@ class Pix
         }
     }
 
-    /*
+    /**
      * Webhook - Configurar.
      *
-     * @param array $params
+     * @param  array $params
      * @return array
      */
-    public function updateWebhookRegistrations($params)
+    public static function updateWebhookRegistrations($params)
     {
         try {
-            $this->validateUpdateWebhookRegistrationsData($params);
+            self::validateUpdateWebhookRegistrationsData($params);
 
-            $response = $this->http->put('/pix/direto/forintegration/v1/webhook/bs2', $params);
+            $response = self::put('/pix/direto/forintegration/v1/webhook/bs2', $params);
 
             return $response;
         } catch (\Exception $e) {
@@ -260,20 +251,20 @@ class Pix
         }
     }
 
-    /*
+    /**
      * Webhook - Excluir.
      *
-     * @param string $inscricaoId
+     * @param  string $inscricaoId
      * @return array
      */
-    public function deleteWebhookRegistration($inscricaoId)
+    public static function deleteWebhook($inscricaoId)
     {
         try {
-            $this->validateDeleteWebhookRegistrationData([
+            self::validateDeleteWebhookData([
                 'inscricaoId' => $inscricaoId
             ]);
 
-            $response = $this->http->delete('/pix/direto/forintegration/v1/webhook/bs2/' . $inscricaoId);
+            $response = self::delete('/pix/direto/forintegration/v1/webhook/bs2/' . $inscricaoId);
 
             return $response;
         } catch (\Exception $e) {
@@ -284,18 +275,18 @@ class Pix
         }
     }
 
-    /*
+    /**
      * Webhook - Incluir certificado.
      *
-     * @param array $params
+     * @param  array $params
      * @return array
      */
-    public function includeWebhookCertificate($params)
+    public static function includeWebhookCertificate($params)
     {
-        $this->validateIncludeWebhookCertificateData($params);
+        self::validateIncludeWebhookCertificateData($params);
 
         try {
-            $response = $this->http->putAttach('/pix/direto/forintegration/v1/webhook/bs2/certificado', 'certificado', $params['filePath'], $params['newFileName'] ?? $params['filePath']);
+            $response = self::putAttach('/pix/direto/forintegration/v1/webhook/bs2/certificado', 'certificado', $params['filePath'], $params['newFileName'] ?? $params['filePath']);
 
             return $response;
         } catch (\Exception $e) {
