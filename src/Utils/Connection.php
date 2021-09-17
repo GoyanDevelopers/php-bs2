@@ -5,35 +5,39 @@ namespace Goyan\Bs2\Utils;
 use Illuminate\Support\Facades\Http;
 use Goyan\Bs2\Models\Token;
 
-class Connection
+trait Connection
 {
-    public $token;
-
-    public function __construct()
+    public static function getToken()
     {
-        $this->token = (new Token)->setConnection(config('bs2.database_connection'))->first();
+        $token = Token::firstOrFail();
+
+        if (!$token->status) {
+            throw new \Exception('Sistema indisponível no momento, retorne novamente em alguns minutos');
+        }
+
+        return $token;
     }
 
-    public function oAuth($refresh_token)
+    public static function refleshConnection($refresh_token)
     {
+        $token = Token::firstOrCreate();
 
-        $this->token->update(['status' => 0]);
+        $token->update(['status' => 0]);
 
         $params = [
             'grant_type' => 'refresh_token',
-            'scope' => 'saldo extrato pagamento transferencia boleto cobv.write cobv.read cob.write cob.read pix.write pix.read dict.write dict.read pix.write pix.read pix.write pix.read pix.write pix.read pix.write pix.read webhook.read webhook.write',
+            'scope' => config('bs2.scope'),
             'refresh_token' => $refresh_token
         ];
 
-        $response = $this->auth($params);
+        $response = self::auth($params);
 
         if ($response['code'] == 200) {
 
             if ($response['response']['access_token']) {
+                $token->update(array_merge($response['response'], ['status' => 1]));
 
-                $this->token->update(array_merge($response['response'], ['status' => 1]));
-
-                return $response['response']['refresh_token'];
+                return $response['response'];
             }
         }
 
@@ -48,7 +52,7 @@ class Connection
      * @param array $params
      * @return array
      */
-    public function auth($params)
+    public static function auth($params)
     {
         try {
             $response = Http::withHeaders([
@@ -79,13 +83,13 @@ class Connection
      * @param array|null $params
      * @return array
      */
-    public function get($url, $params = null)
+    public static function get($url, $params = null)
     {
         try {
             $response = Http::withHeaders([
                 'Accept' => 'application/json'
             ])
-                ->withToken($this->token->access_token)
+                ->withToken(self::getToken()->access_token)
                 ->get(config('bs2.server') . $url, $params);
 
             return [
@@ -108,13 +112,13 @@ class Connection
      * @param array|null $params
      * @return array
      */
-    public function post($url, $params = null)
+    public static function post($url, $params = null)
     {
         try {
             $response = Http::withHeaders([
                 'Accept' => 'application/json'
             ])
-                ->withToken($this->token->access_token)
+                ->withToken(self::getToken()->access_token)
                 ->post(config('bs2.server') . $url, $params);
 
             return [
@@ -137,13 +141,13 @@ class Connection
      * @param array|null $params
      * @return array
      */
-    public function put($url, $params = null)
+    public static function put($url, $params = null)
     {
         try {
             $response = Http::withHeaders([
                 'Accept' => 'application/json'
             ])
-                ->withToken($this->token->access_token)
+                ->withToken(self::getToken()->access_token)
                 ->put(config('bs2.server') . $url, $params);
 
             return [
@@ -166,13 +170,13 @@ class Connection
      * @param array|null $params
      * @return array
      */
-    public function delete($url, $params = null)
+    public static function delete($url, $params = null)
     {
         try {
             $response = Http::withHeaders([
                 'Accept' => 'application/json'
             ])
-                ->withToken($this->token->access_token)
+                ->withToken(self::getToken()->access_token)
                 ->delete(config('bs2.server') . $url, $params);
 
             return [
@@ -197,11 +201,11 @@ class Connection
      * @param string $newFileName
      * @return array
      */
-    public function putAttach($url, $fileName, $filePath, $newFileName)
+    public static function putAttach($url, $fileName, $filePath, $newFileName)
     {
         try {
             $response = Http::attach($fileName, file_get_contents($filePath), $newFileName)
-                ->withToken($this->token->access_token)
+                ->withToken(self::getToken()->access_token)
                 ->put(config('bs2.server') . $url);
 
             return [

@@ -18,11 +18,7 @@ class Pix
      */
     public function __construct()
     {
-        $this->http = new Connection();
-
-        if ($this->http->token->status == 0) {
-            return ['code' => 401];
-        }
+        $this->http = new Connection(true);
     }
 
     /*

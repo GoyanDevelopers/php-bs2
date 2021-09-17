@@ -17,4 +17,9 @@ class Token extends Model
 
     protected $primaryKey = 'id';
     protected $table = 'Token';
+
+    public function __construct()
+    {
+        $this->connection = config('bs2.database_connection');
+    }
 }

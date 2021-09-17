@@ -8,10 +8,7 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\Notificacao;
 use Goyan\Bs2\Utils\Connection;
-use App\Models\Usuario;
 
 class GenerateToken implements ShouldQueue, ShouldBeUnique
 {
@@ -33,23 +30,15 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
         return $this->refresh_token;
     }
 
-    public function handle(Connection $conn)
+    public function handle()
     {
         try {
+            $connection = Connection::refleshConnection($this->refresh_token);
 
-            $refresh_token = $conn->oAuth($this->refresh_token);
-
-            if ($refresh_token) {
-                GenerateToken::dispatch($refresh_token, true)->onQueue('high')->delay(300);
-                return;
-            }
+            GenerateToken::dispatch($connection['refresh_token'], true)->onQueue('high')->delay(300);
         } catch (\Throwable $e) {
 
             if ($this->relaunch) {
-                if ($this->attempts() >= 3) {
-                    Notification::send(Usuario::where('is_admin', 1)->get(), new Notificacao("Cron Wallet", "Houve uma falha renovar o token da BS2, contate a equipe técnica"));
-                }
-
                 return $this->release(50);
             }
 

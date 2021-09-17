@@ -12,7 +12,7 @@ trait Helpers
      * @param array $key
      * @return void
      */
-    public function validatePixKey($key)
+    public static function validatePixKey($key)
     {
         $validator = Validator::make($key, [
             'chave.id' => 'nullable|string',
@@ -33,7 +33,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateConfirmPaymentData($data)
+    public static function validateConfirmPaymentData($data)
     {
         $validator = Validator::make($data, [
             'recebedor.ispb' => 'required|string',
@@ -65,7 +65,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validatePaymentBoletoData($data)
+    public static function validatePaymentBoletoData($data)
     {
         $validator = Validator::make($data, [
             'codigoIdentificacao' => 'required|string',
@@ -85,7 +85,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validatePaymentTedData($data)
+    public static function validatePaymentTedData($data)
     {
         $validator = Validator::make($data, [
             'favorecido.nome' => 'required|string|max:60',
@@ -114,7 +114,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateDynamicChargeData($data)
+    public static function validateDynamicChargeData($data)
     {
         $validator = Validator::make($data, [
             'txId' => 'required|string',
@@ -141,7 +141,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateChargeDetailsData($data)
+    public static function validateChargeDetailsData($data)
     {
         $validator = Validator::make($data, [
             'Inicio' => 'required|date_format:Y-m-d',
@@ -163,7 +163,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateChargeDetailsByTxIdData($data)
+    public static function validateChargeDetailsByTxIdData($data)
     {
         $validator = Validator::make($data, [
             'txId' => 'required|string',
@@ -180,7 +180,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateReceiptDetailsData($data)
+    public static function validateReceiptDetailsData($data)
     {
         $validator = Validator::make($data, [
             'Inicio' => 'required|date_format:Y-m-d',
@@ -200,7 +200,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateReceiptDetailsByRecebimentoIdData($data)
+    public static function validateReceiptDetailsByRecebimentoIdData($data)
     {
         $validator = Validator::make($data, [
             'recebimentoId' => 'required|string',
@@ -217,7 +217,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateUpdateWebhookRegistrationsData($data)
+    public static function validateUpdateWebhookRegistrationsData($data)
     {
         if (!is_array($data)) {
             throw new \Exception("Parameters must be inside an array.");
@@ -246,7 +246,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateDeleteWebhookRegistrationData($data)
+    public static function validateDeleteWebhookRegistrationData($data)
     {
         $validator = Validator::make($data, [
             'inscricaoId' => 'required|string',
@@ -263,7 +263,7 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public function validateIncludeWebhookCertificateData($data)
+    public static function validateIncludeWebhookCertificateData($data)
     {
         $validator = Validator::make($data, [
             'filePath' => 'required|string',
