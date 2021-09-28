@@ -50,7 +50,7 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
         try {
             $connection = Connection::refleshConnection($this->refresh_token);
 
-            GenerateToken::dispatch($connection['refresh_token'], true)->onQueue('high')->delay(($connection['expires_in'] / 100 * 80));
+            GenerateToken::dispatch($connection['refresh_token'], true)->onQueue('high')->delay($connection['expires_in'] / 100 * 80);
         } catch (\Throwable $e) {
 
             if ($this->relaunch) {
