@@ -13,15 +13,15 @@ class Pix
     /**
      * Pagamento - Iniciar pagamento por chave
      *
-     * @param  string $key
+     * @param  string $params
      * @return array
      */
-    public static function paymentByKey($key)
+    public static function paymentByKey($params)
     {
         try {
-            self::validatePixKey($key);
+            self::validatePixKey($params);
 
-            $response = self::post('/pix/direto/forintegration/v1/pagamentos/chave', $key);
+            $response = self::post('/pix/direto/forintegration/v1/pagamentos/chave', $params);
 
             return $response;
         } catch (\Exception $e) {
