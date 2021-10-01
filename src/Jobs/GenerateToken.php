@@ -14,7 +14,8 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 3;
+    public $tries = 86400; // 1 DIA | $tries * $backoff = 2 DIAS TESTANDO ANTES DE ENCERRAR O EVENTO
+    public $backoff = 30; // 30 SEGUNDOS DE DELAY ENTRE AS FALHAS
 
     /**
      * @var string
@@ -26,7 +27,7 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
      */
     protected $relaunch;
 
-    public function __construct($refresh_token, $relaunch)
+    public function __construct($refresh_token, $relaunch = true)
     {
         $this->refresh_token = $refresh_token;
         $this->relaunch = $relaunch;
@@ -47,17 +48,16 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
+
         try {
             $connection = Connection::refleshConnection($this->refresh_token);
 
-            GenerateToken::dispatch($connection['refresh_token'], true)->onQueue('high')->delay($connection['expires_in'] / 100 * 50);
-        } catch (\Throwable $e) {
+            GenerateToken::dispatch($connection['refresh_token'], true)->onQueue('high')->delay($connection['expires_in'] - 120);
+        } catch (\Throwable $exception) {
 
-            if ($this->relaunch) {
-                return $this->release(20);
+            if ($this->relaunch == false) {
+                $this->fail($exception);
             }
-
-            throw new \Exception($e->getMessage());
         }
     }
 }
