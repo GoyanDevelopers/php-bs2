@@ -15,6 +15,7 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $tries = 86400; // 1 DIA | $tries * $backoff = 2 DIAS TESTANDO ANTES DE ENCERRAR O EVENTO
+    public $maxExceptions = 86400;
     public $backoff = 30; // 30 SEGUNDOS DE DELAY ENTRE AS FALHAS
 
     /**
@@ -42,6 +43,16 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
     }
 
     /**
+     * retryUntil
+     *
+     * @return void
+     */
+    public function retryUntil()
+    {
+        return now()->addDays(2);
+    }
+
+    /**
      * Executar evento.
      *
      * @return mixed
@@ -55,7 +66,7 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
             GenerateToken::dispatch($connection['refresh_token'], true)->onQueue('high')->delay($connection['expires_in'] - 120);
         } catch (\Throwable $exception) {
 
-            if ($this->relaunch == false) {
+            if ($this->relaunch == true) {
                 $this->fail($exception);
             }
         }

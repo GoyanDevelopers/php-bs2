@@ -53,14 +53,18 @@ trait Connection
 
             if ($response->getStatusCode() == 200) {
 
-                $token->update(array_merge(['status' => 1], $response->json()));
+                $responseJson = $response->json();
 
-                return $response->json();
+                if (isset($responseJson['refresh_token'])) {
+                    $token->update(array_merge(['status' => 1], $responseJson));
+
+                    return $responseJson;
+                }
             }
 
             throw new \Exception('O Token "' . $refresh_token . '" não foi aceito pela BS2, confira o arquivo config/bs2.php e em seguida realize um novo disparo');
-        } catch (\Throwable $e) {
-            throw new \Exception($e->getMessage());
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

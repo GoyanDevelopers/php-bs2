@@ -13,15 +13,37 @@ class Pix
     /**
      * Pagamento - Iniciar pagamento por chave
      *
-     * @param  string $params
+     * @param  string $key
      * @return array
      */
-    public static function paymentByKey($params)
+    public static function paymentByKey($key)
     {
         try {
-            self::validatePixKey($params);
+            self::validatePixKey($key);
 
-            $response = self::post('/pix/direto/forintegration/v1/pagamentos/chave', $params);
+            $response = self::post('/pix/direto/forintegration/v1/pagamentos/chave', $key);
+
+            return $response;
+        } catch (\Exception $e) {
+            return [
+                'code' => $e->getCode(),
+                'response' => $e->getMessage()
+            ];
+        }
+    }
+
+        /**
+     * Pagamento - Iniciar pagamento por chave
+     *
+     * @param  string $key
+     * @return array
+     */
+    public static function paymentByManual($key)
+    {
+        try {
+            self::validateManualKey($key);
+
+            $response = self::post('/pix/direto/forintegration/v1/pagamentos/manual', $key);
 
             return $response;
         } catch (\Exception $e) {

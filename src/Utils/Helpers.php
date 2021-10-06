@@ -28,6 +28,29 @@ trait Helpers
     }
 
     /**
+     * Valida dados pix.
+     *
+     * @param array $key
+     * @return void
+     */
+    public static function validateManualKey($key)
+    {
+        $validator = Validator::make($key, [
+            'recebedor.ispb' => 'required|exists:Bancos,ispb',
+            'recebedor.conta.agencia' => 'required|string',
+            'recebedor.conta.numero' => 'required|string',
+            'recebedor.conta.tipo' => 'required|in:ContaCorrente,Poupanca,ContaSalario,ContaPagamento',
+            'recebedor.pessoa.documento' => 'required|string',
+            'recebedor.pessoa.tipoDocumento' => 'required|in:CPF,CNPJ',
+            'recebedor.pessoa.nome' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new \Exception($validator->errors()->first());
+        }
+    }
+
+    /**
      * Valida dados para confirmação de pagamento.
      *
      * @param array $data
