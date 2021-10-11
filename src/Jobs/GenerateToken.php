@@ -49,7 +49,7 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
      */
     public function retryUntil()
     {
-        return now()->addDays(2);
+        return now()->addMinutes(15);
     }
 
     /**
