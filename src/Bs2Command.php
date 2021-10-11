@@ -27,7 +27,7 @@ class Bs2Command extends Command
         $refresh_token = $this->option('token');
 
         if ($refresh_token) {
-            GenerateToken::dispatch($refresh_token, false)->onQueue('high');
+            GenerateToken::dispatch($refresh_token, false);
 
             $this->info('Goyan Developers: Evento disparado com sucesso');
         }
