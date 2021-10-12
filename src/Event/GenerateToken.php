@@ -1,6 +1,6 @@
 <?php
 
-namespace Goyan\Bs2\Jobs;
+namespace Goyan\Bs2\Event;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,9 +14,9 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 86400; // 1 DIA | $tries * $backoff = 2 DIAS TESTANDO ANTES DE ENCERRAR O EVENTO
-    public $maxExceptions = 86400;
-    public $backoff = 30; // 30 SEGUNDOS DE DELAY ENTRE AS FALHAS
+    public $tries = 180; // $tries * $backoff = 15 MINUTOS
+    public $maxExceptions = 180;
+    public $backoff = 5; // 30 SEGUNDOS DE DELAY ENTRE AS FALHAS
 
     /**
      * @var string
@@ -63,7 +63,7 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
         try {
             $connection = Connection::refleshConnection($this->refresh_token);
 
-            GenerateToken::dispatch($connection['refresh_token'], true)->delay($connection['expires_in'] - 120);
+            GenerateToken::dispatch($connection['refresh_token'], true)->delay((int)$connection['expires_in'] - 5);
         } catch (\Throwable $exception) {
 
             if ($this->relaunch == true) {

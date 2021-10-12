@@ -3,7 +3,7 @@
 namespace Goyan\Bs2;
 
 use Illuminate\Console\Command;
-use Goyan\Bs2\Jobs\GenerateToken;
+use Goyan\Bs2\Event\GenerateToken;
 
 class Bs2Command extends Command
 {
