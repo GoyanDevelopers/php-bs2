@@ -43,10 +43,11 @@ trait Connection
                 'refresh_token' => $refresh_token
             ];
 
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/x-www-form-urlencoded'
-            ])
+            $response = Http::timeout(30)
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/x-www-form-urlencoded'
+                ])
                 ->asForm()
                 ->withBasicAuth(config('bs2.api_key'), config('bs2.api_secret'))
                 ->post(config('bs2.server') . '/auth/oauth/v2/token', $params);
