@@ -9,14 +9,14 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Goyan\Bs2\Utils\Connection;
-
+use Throwable;
 class GenerateToken implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 180; // $tries * $backoff = 15 MINUTOS
-    public $maxExceptions = 180;
-    public $backoff = 5; // 30 SEGUNDOS DE DELAY ENTRE AS FALHAS
+    public $tries = 80;
+    public $maxExceptions = 80;
+    public $backoff = 10;
 
     /**
      * @var string
@@ -62,8 +62,8 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
         try {
             $connection = Connection::refleshConnection($this->refresh_token);
 
-            GenerateToken::dispatch($connection['refresh_token'])->delay((int) $connection['expires_in'] - 5);
-        } catch (\Throwable $exception) {
+            GenerateToken::dispatch($connection['refresh_token'])->delay((int) $connection['expires_in'] - 30);
+        } catch (Throwable $exception) {
 
             if ($this->relaunch == true) {
                 $this->fail($exception);
