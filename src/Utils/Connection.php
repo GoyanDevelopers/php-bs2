@@ -3,8 +3,10 @@
 namespace Goyan\Bs2\Utils;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Goyan\Bs2\Models\Token;
-
+use Throwable;
+use Exception;
 trait Connection
 {
     /**
@@ -17,7 +19,7 @@ trait Connection
         $token = Token::firstOrFail();
 
         if (!$token->status) {
-            throw new \Exception('Sistema indisponível no momento, retorne novamente em alguns minutos');
+            throw new Exception('Sistema indisponível no momento, retorne novamente em alguns minutos');
         }
 
         return $token;
@@ -52,19 +54,21 @@ trait Connection
                 ->withBasicAuth(config('bs2.api_key'), config('bs2.api_secret'))
                 ->post(config('bs2.server') . '/auth/oauth/v2/token', $params);
 
-            if ($response->getStatusCode() == 200) {
+            $response->throw();
+
+            if ($response->successful()) {
 
                 $responseJson = $response->json();
 
-                if (isset($responseJson['refresh_token'])) {
-                    $token->update(array_merge(['status' => 1], $responseJson));
+                $token->update(array_merge(['status' => 1], $responseJson));
 
-                    return $responseJson;
-                }
+                return $responseJson;
             }
 
-            throw new \Exception('O Token "' . $refresh_token . '" não foi aceito pela BS2, confira o arquivo config/bs2.php e em seguida realize um novo disparo');
-        } catch (\Throwable $th) {
+            throw new Exception('O Token "' . $refresh_token . '" não foi aceito pela BS2, confira o arquivo config/bs2.php e em seguida realize um novo disparo');
+        } catch (ConnectionException $th) {
+            throw new Exception('Tempo limite de execução expirado.');
+        } catch (Throwable $th) {
             throw $th;
         }
     }
@@ -90,7 +94,7 @@ trait Connection
                 'code' => $response->getStatusCode(),
                 'response' => $response->json()
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()
@@ -119,7 +123,7 @@ trait Connection
                 'code' => $response->getStatusCode(),
                 'response' => $response->json()
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()
@@ -148,7 +152,7 @@ trait Connection
                 'code' => $response->getStatusCode(),
                 'response' => $response->json()
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()
@@ -177,7 +181,7 @@ trait Connection
                 'code' => $response->getStatusCode(),
                 'response' => $response->json()
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()
@@ -206,7 +210,7 @@ trait Connection
                 'code' => $response->getStatusCode(),
                 'response' => $response->json()
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()

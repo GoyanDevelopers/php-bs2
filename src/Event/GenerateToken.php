@@ -59,11 +59,10 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
      */
     public function handle()
     {
-
         try {
             $connection = Connection::refleshConnection($this->refresh_token);
 
-            GenerateToken::dispatch($connection['refresh_token'], true)->delay((int)$connection['expires_in'] - 5);
+            GenerateToken::dispatch($connection['refresh_token'])->delay((int) $connection['expires_in'] - 5);
         } catch (\Throwable $exception) {
 
             if ($this->relaunch == true) {
