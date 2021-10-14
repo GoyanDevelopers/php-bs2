@@ -17,6 +17,7 @@ class GenerateToken implements ShouldQueue, ShouldBeUnique
     public $tries = 80;
     public $maxExceptions = 80;
     public $backoff = 10;
+    public $uniqueFor = 300;
 
     /**
      * @var string
