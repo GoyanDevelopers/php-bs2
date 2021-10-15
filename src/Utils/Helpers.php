@@ -240,22 +240,16 @@ trait Helpers
      * @param array $data
      * @return void
      */
-    public static function validateDeleteWebhookData($data)
+    public static function validateUpdateWebhookRegistrationsData($data)
     {
-        if (!is_array($data)) {
-            throw new \Exception("Parameters must be inside an array.");
-        }
-
-        $data = $data[0];
-
         $validator = Validator::make($data, [
-            'url' => 'required|string',
-            'eventos' => 'required|array',
-            'somenteComTxId' => 'required|boolean',
-            'contaNumero' => 'required|integer',
-            'autorizacao' => 'required|array',
-            'autorizacao.valor' => 'required|string',
-            'autorizacao.tipo' => 'required|string',
+            '*.url' => 'required|string',
+            '*.eventos' => 'required|array',
+            '*.somenteComTxId' => 'required|boolean',
+            '*.contaNumero' => 'nullable|integer',
+            '*.autorizacao' => 'nullable|array',
+            '*.autorizacao.valor' => 'nullable|string',
+            '*.autorizacao.tipo' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
