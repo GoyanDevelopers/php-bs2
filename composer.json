@@ -23,11 +23,6 @@
             "Goyan\\Bs2\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Goyan\\Bs2\\": "src/"
-        }
-    },
     "extra": {
         "laravel": {
             "providers": [

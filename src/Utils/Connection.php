@@ -3,9 +3,7 @@
 namespace Goyan\Bs2\Utils;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\ConnectionException;
 use Goyan\Bs2\Models\Token;
-use Throwable;
 use Exception;
 trait Connection
 {
@@ -16,61 +14,13 @@ trait Connection
      */
     public static function getToken()
     {
-        $token = Token::firstOrFail();
+        $token = Token::first();
 
         if (!$token->status) {
             throw new Exception('Sistema indisponível no momento, retorne novamente em alguns minutos');
         }
 
         return $token;
-    }
-
-    /**
-     * Atualizar token de acesso
-     *
-     * @param  mixed $refresh_token
-     * @return void
-     */
-    public static function refleshConnection($refresh_token)
-    {
-        try {
-
-            $token = Token::firstOrCreate();
-
-            $token->update(['status' => 0]);
-
-            $params = [
-                'grant_type' => 'refresh_token',
-                'scope' => config('bs2.scope'),
-                'refresh_token' => $refresh_token
-            ];
-
-            $response = Http::timeout(30)
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/x-www-form-urlencoded'
-                ])
-                ->asForm()
-                ->withBasicAuth(config('bs2.api_key'), config('bs2.api_secret'))
-                ->post(config('bs2.server') . '/auth/oauth/v2/token', $params);
-
-            $response->throw();
-
-            if ($response->successful()) {
-
-                $responseJson = $response->json();
-
-                $token->update(array_merge(['status' => 1], $responseJson));
-
-                return $responseJson;
-            }
-
-            throw new Exception('O Token "' . $refresh_token . '" não foi aceito pela BS2, confira o arquivo config/bs2.php e em seguida realize um novo disparo');
-        } catch (ConnectionException $th) {
-            throw new Exception('Tempo limite de execução expirado.');
-        } catch (Throwable $th) {
-            throw $th;
-        }
     }
 
     /**
