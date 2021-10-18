@@ -2,13 +2,19 @@
 
 namespace Goyan\Bs2;
 
-use Goyan\Bs2\Utils\Connection;
-use Goyan\Bs2\Utils\Helpers;
+use Goyan\Bs2\Request;
+use Exception;
 
-class Banking
+class Banking extends Request
 {
-    use Helpers;
-    use Connection;
+    public $client;
+    public $access_token;
+
+    public function __construct($setup, $access_token = false)
+    {
+        $this->client = $setup->client;
+        $this->access_token = $access_token ?? $setup->access_token;
+    }
 
     /**
      * Consulta de Saldo
@@ -16,9 +22,9 @@ class Banking
      *
      * @return array
      */
-    public static function getSaldo()
+    public function getSaldo()
     {
-        $response = self::get('/pj/apibanking/forintegration/v1/contascorrentes/saldo');
+        $response = $this->get('/pj/apibanking/forintegration/v1/contascorrentes/saldo');
 
         return $response;
     }
@@ -29,9 +35,9 @@ class Banking
      *
      * @return array
      */
-    public static function getExtrato()
+    public function getExtrato()
     {
-        $response = self::get('/pj/apibanking/forintegration/v1/contascorrentes/extrato');
+        $response = $this->get('/pj/apibanking/forintegration/v1/contascorrentes/extrato');
 
         return $response;
     }
@@ -43,13 +49,13 @@ class Banking
      * @param  string $codigoIdentificacao
      * @return array
      */
-    public static function getBoleto($codigoIdentificacao)
+    public function getBoleto($codigoIdentificacao)
     {
         try {
-            $response = self::get('/pj/apibanking/forintegration/v1/pagamentos/' . $codigoIdentificacao);
+            $response = $this->get('/pj/apibanking/forintegration/v1/pagamentos/' . $codigoIdentificacao);
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()
@@ -64,15 +70,13 @@ class Banking
      * @param  array $params
      * @return array
      */
-    public static function paymentBoleto($params)
+    public function paymentBoleto($params)
     {
         try {
-            self::validatePaymentBoletoData($params);
-
-            $response = self::post('/pj/apibanking/forintegration/v1/pagamentos', $params);
+            $response = $this->post('/pj/apibanking/forintegration/v1/pagamentos', $params);
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()
@@ -87,15 +91,13 @@ class Banking
      * @param  array $params
      * @return array
      */
-    public static function paymentTransfer($params)
+    public function paymentTransfer($params)
     {
         try {
-            self::validatePaymentTransferData($params);
-
-            $response = self::post('/pj/apibanking/forintegration/v1/transferencias/simplificado', $params);
+            $response = $this->post('/pj/apibanking/forintegration/v1/transferencias/simplificado', $params);
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'code' => $e->getCode(),
                 'response' => $e->getMessage()
