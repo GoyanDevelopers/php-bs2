@@ -3,7 +3,7 @@
     "description": "Package for integration with bs2.",
     "keywords": [
         "bs2",
-        "laravel",
+        "php",
         "goyan"
     ],
     "type": "library",
