@@ -38,6 +38,10 @@ class Setup
                 'auth' => [
                     $this->api_key, $this->api_secret
                 ],
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/x-www-form-urlencoded'
+                ],
                 'timeout'  => 30,
                 'form_params' => [
                     'grant_type' => 'refresh_token',
