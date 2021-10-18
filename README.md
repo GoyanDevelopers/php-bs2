@@ -18,12 +18,12 @@ composer require goyan/php-bs2
 use Goyan\Bs2\Setup;
 use Goyan\Bs2\Pix;
 
-var $endpoint = 'https://api.bs2.com'; // PRODUÇÃO
-var $endpoint = 'https://apihmz.bancobonsucesso.com.br'; // SANDBOX
-var $api_key = 'API KEY';
-var $api_secret = 'API SECRET';
-var $refresh_token = 'REFRESH TOKEN';
-var $scope = 'cobv.write cobv.read cob.write cob.read pix.write pix.read dict.write dict.read pix.write pix.read pix.write pix.read pix.write pix.read pix.write pix.read webhook.read webhook.write';
+$endpoint = 'https://api.bs2.com'; // PRODUÇÃO
+$endpoint = 'https://apihmz.bancobonsucesso.com.br'; // SANDBOX
+$api_key = 'API KEY';
+$api_secret = 'API SECRET';
+$refresh_token = 'REFRESH TOKEN';
+$scope = 'cobv.write cobv.read cob.write cob.read pix.write pix.read dict.write dict.read pix.write pix.read pix.write pix.read pix.write pix.read pix.write pix.read webhook.read webhook.write';
 
 $setup = new Setup($endpoint, $api_key, $api_secret);
 $setup->GenerateAccessToken($refresh_token, $scope);
@@ -40,13 +40,13 @@ print_r($pix->paymentByKey('CHAVE PIX'));
 use Goyan\Bs2\Setup;
 use Goyan\Bs2\Banking;
 
-var $endpoint = 'https://api.bs2.com'; // PRODUÇÃO
-var $endpoint = 'https://apihmz.bancobonsucesso.com.br'; // SANDBOX
+$endpoint = 'https://api.bs2.com'; // PRODUÇÃO
+$endpoint = 'https://apihmz.bancobonsucesso.com.br'; // SANDBOX
 
-var $api_key = 'API KEY';
-var $api_secret = 'API SECRET';
-var $refresh_token = 'REFRESH TOKEN';
-var $scope = 'saldo extrato pagamento transferencia boleto';
+$api_key = 'API KEY';
+$api_secret = 'API SECRET';
+$refresh_token = 'REFRESH TOKEN';
+$scope = 'saldo extrato pagamento transferencia boleto';
 
 $setup = new Setup($endpoint, $api_key, $api_secret);
 
