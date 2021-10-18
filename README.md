@@ -23,7 +23,9 @@ $endpoint = 'https://apihmz.bancobonsucesso.com.br'; // SANDBOX
 $api_key = 'API KEY';
 $api_secret = 'API SECRET';
 $refresh_token = 'REFRESH TOKEN';
-$scope = 'cobv.write cobv.read cob.write cob.read pix.write pix.read dict.write dict.read pix.write pix.read pix.write pix.read pix.write pix.read pix.write pix.read webhook.read webhook.write';
+$scope = 'cobv.write cobv.read cob.write cob.read pix.write pix.read dict.write 
+dict.read pix.write pix.read pix.write pix.read pix.write pix.read pix.write 
+pix.read webhook.read webhook.write';
 
 $setup = new Setup($endpoint, $api_key, $api_secret);
 $setup->GenerateAccessToken($refresh_token, $scope);
