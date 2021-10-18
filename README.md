@@ -8,7 +8,7 @@ Go to <https://devs.bs2.com/> for more technical details.
 You can install the package via composer
 
 ``` bash
-composer require goyan/laravel-bs2
+composer require goyan/php-bs2
 ```
 Next publish the migration with:
 ``` bash
