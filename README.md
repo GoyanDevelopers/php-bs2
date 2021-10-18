@@ -1,6 +1,7 @@
 # Bs2 API PHP
 
-Este é um pacote desenvolvido no Laravel 8, ainda em desenvolvimento (todas e quaisquer contribuições são bem-vindas)
+Este é um pacote para facilitar a integração com o [Banco Bs2](https://www.bancobs2.com.br/).
+Projeto ainda em desenvolvimento (todas e quaisquer contribuições são bem-vindas)
 Acesse <https://devs.bs2.com/> para obter mais detalhes técnicos.
 
 ## Instalação
