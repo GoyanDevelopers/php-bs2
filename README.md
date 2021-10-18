@@ -1,30 +1,59 @@
-# Bs2 Empresas for Laravel
+# Bs2 API PHP
 
-This is a package developed in Laravel 8, still under development (Any and all contributions are very welcome)
-Go to <https://devs.bs2.com/> for more technical details.
+Este é um pacote desenvolvido no Laravel 8, ainda em desenvolvimento (todas e quaisquer contribuições são bem-vindas)
+Acesse <https://devs.bs2.com/> para obter mais detalhes técnicos.
 
-## Installation
+## Instalação
 
-You can install the package via composer
+Você pode instalar o pacote via composer
 
 ``` bash
 composer require goyan/php-bs2
 ```
-Next publish the migration with:
-``` bash
-php artisan vendor:publish --provider="Goyan\Bs2\Bs2ServiceProvider"
+
+### Exemplo de requisição PIX
+
+``` php
+use Goyan\Bs2\Setup;
+use Goyan\Bs2\Pix;
+
+var $endpoint = 'https://api.bs2.com'; // PRODUÇÃO
+var $endpoint = 'https://apihmz.bancobonsucesso.com.br'; // SANDBOX
+var $api_key = 'API KEY';
+var $api_secret = 'API SECRET';
+var $refresh_token = 'REFRESH TOKEN';
+var $scope = 'cobv.write cobv.read cob.write cob.read pix.write pix.read dict.write dict.read pix.write pix.read pix.write pix.read pix.write pix.read pix.write pix.read webhook.read webhook.write';
+
+$setup = new Setup($endpoint, $api_key, $api_secret);
+$setup->GenerateAccessToken($refresh_token, $scope);
+
+$pix = new Pix($setup);
+print_r($pix->paymentByKey('CHAVE PIX'));
+
 ```
-Run the migrate command to create the necessary table:
 
-``` bash
-php artisan migrate
+
+### Exemplo de requisição Banking
+
+``` php
+use Goyan\Bs2\Setup;
+use Goyan\Bs2\Banking;
+
+var $endpoint = 'https://api.bs2.com'; // PRODUÇÃO
+var $endpoint = 'https://apihmz.bancobonsucesso.com.br'; // SANDBOX
+
+var $api_key = 'API KEY';
+var $api_secret = 'API SECRET';
+var $refresh_token = 'REFRESH TOKEN';
+var $scope = 'saldo extrato pagamento transferencia boleto';
+
+$setup = new Setup($endpoint, $api_key, $api_secret);
+
+$setup->GenerateAccessToken($refresh_token, $scope);
+
+$banking = new Banking($setup);
+print_r($banking->getSaldo());
+
 ```
-
-Finally, run the event loop with the code below (Replace **{token}** with your refresh_token provided by **BS2**)
-
-``` bash
-php artisan goyan:bs2 --token="{token}"
-```
-
 ## Licença
 GNU GENERAL PUBLIC LICENSE
