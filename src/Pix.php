@@ -7,13 +7,14 @@ use Exception;
 
 class Pix extends Request
 {
-    public $client;
-    public $access_token;
 
-    public function __construct($setup, $access_token = false)
+    public static function init($api_key, $api_secret, $access_token = false)
     {
-        $this->client = $setup->client;
-        $this->access_token = $access_token ?? $setup->access_token;
+        $static = new static($api_key, $api_secret, $access_token);
+
+        $static->PixCredentials();
+
+        return $static;
     }
 
     /**

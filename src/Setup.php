@@ -2,65 +2,147 @@
 
 namespace Goyan\Bs2;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use Exception;
-
-class Setup
+abstract class Setup
 {
-    public $api_key;
-    public $api_secret;
-    public $client;
-    public $access_token;
+    protected $Client;
 
-    public function __construct($endpoint, $api_key, $api_secret)
+    protected $Endpoint;
+
+    protected $ApiKey;
+
+    protected $ApiSecret;
+
+    protected $Scope;
+
+    protected $RefreshToken;
+
+    protected $AccessToken;
+
+    /**
+     * Get the value of Client
+     */
+    public function Client()
     {
-        $this->api_key = $api_key;
-        $this->api_secret = $api_secret;
-
-        $this->client = new Client([
-            'base_uri' => $endpoint,
-            'headers' => [
-                'Accept'     => 'application/json'
-            ]
-        ]);
+        return $this->Client;
     }
 
     /**
-     * Buscar token de acesso
+     * Set the value of Client
      *
-     * @return mixed
+     * @return  self
      */
-    public function GenerateAccessToken($refresh_token, $scope)
+    public function setClient($Client)
     {
-        try {
-            $request = $this->client->request('POST', '/auth/oauth/v2/token', [
-                'auth' => [
-                    $this->api_key, $this->api_secret
-                ],
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/x-www-form-urlencoded'
-                ],
-                'timeout'  => 30,
-                'form_params' => [
-                    'grant_type' => 'refresh_token',
-                    'scope' => $scope,
-                    'refresh_token' => $refresh_token
-                ]
-            ]);
+        $this->Client = $Client;
 
-            $body = $request->getBody();
+        return $this;
+    }
 
-            $json = json_decode($body->getContents(), true);
+    /**
+     * Get the value of AccessToken
+     */
+    public function getAccessToken()
+    {
+        return $this->AccessToken;
+    }
 
-            $this->access_token = $json['access_token'];
+    /**
+     * Set the value of AccessToken
+     *
+     * @return  self
+     */
+    public function setAccessToken($AccessToken)
+    {
+        $this->AccessToken = $AccessToken;
 
-            return $json;
-        } catch (ClientException $e) {
-            throw new Exception($e->getResponse()->getBody(), $e->getCode());
-        } catch (Exception $e) {
-            throw $e;
-        }
+        return $this;
+    }
+
+    /**
+     * Get the value of Endpoint
+     */
+    public function getEndpoint()
+    {
+        return $this->Endpoint ?? 'https://api.bs2.com';
+    }
+
+    /**
+     * Set the value of Endpoint
+     *
+     * @return  self
+     */
+    public function setEndpoint($Endpoint)
+    {
+        $this->Endpoint = $Endpoint;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of ApiKey
+     */
+    public function getApiKey()
+    {
+        return $this->ApiKey;
+    }
+
+    /**
+     * Set the value of ApiKey
+     *
+     * @return  self
+     */
+    public function setApiKey($ApiKey)
+    {
+        $this->ApiKey = $ApiKey;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of ApiSecret
+     */
+    public function getApiSecret()
+    {
+        return $this->ApiSecret;
+    }
+
+    /**
+     * Set the value of ApiSecret
+     *
+     * @return  self
+     */
+    public function setApiSecret($ApiSecret)
+    {
+        $this->ApiSecret = $ApiSecret;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Scope
+     */
+    public function getScope()
+    {
+        return $this->Scope ?? 'saldo extrato pagamento boleto cob.write cob.read pix.write pix.read dict.write dict.read webhook.read webhook.write cobv.write cobv.read';
+    }
+
+    /**
+     * Get the value of RefreshToken
+     */
+    public function getRefreshToken()
+    {
+        return $this->RefreshToken;
+    }
+
+    /**
+     * Set the value of RefreshToken
+     *
+     * @return  self
+     */
+    public function setRefreshToken($RefreshToken)
+    {
+        $this->RefreshToken = $RefreshToken;
+
+        return $this;
     }
 }
