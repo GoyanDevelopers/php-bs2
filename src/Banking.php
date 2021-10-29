@@ -87,6 +87,27 @@ class Banking extends Request
     }
 
     /**
+     * Consulta do status da solicitação de pagamento
+     * Consulta a situação da solicitação de pagamento
+     *
+     * @param  array $params
+     * @return array
+     */
+    public function SolicitacaoBoleto($solicitacaoId)
+    {
+        try {
+            $response = $this->get('/pj/apibanking/forintegration/v1/pagamentos/solicitacoes/' . $solicitacaoId);
+
+            return $response;
+        } catch (Exception $e) {
+            return [
+                'code' => $e->getCode(),
+                'response' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * Transferência
      * Efetua TED para qualquer titularidade sem cadastro do favorecido
      *
