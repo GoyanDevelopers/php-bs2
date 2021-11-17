@@ -1,4 +1,4 @@
-# Bs2 API PHP
+# PHP BS2 API PHP
 
 Este é um pacote para facilitar a integração com o [Banco Bs2](https://www.bancobs2.com.br/).
 Projeto ainda em desenvolvimento (todas e quaisquer contribuições são bem-vindas)
